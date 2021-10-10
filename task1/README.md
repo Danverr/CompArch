@@ -131,16 +131,53 @@ struct Container {            // [120008]
 
 ### Память программы
 
-**main(int argc, char\* argv[])**
+**main(int argc, char\* argv[]) [120600]**
 
 | Переменная              | Размер       |
 |-------------------------|--------------|
 | int argc                | 4 [0]        |
 | char* argv[]            | 8 [0, heap]  |
-| Container container     | 120008 [12]  |
-| std::ifstream input     | 576 [120020] |
-| int size                | 4 [120596]   |
-| std::ofstream output    | 568 [120600] |
+| Container container     | 120008 [4]   |
+| std::ifstream input     | 576 [120012] |
+| int size                | 4 [120588]   |
+| std::ofstream output    | 568 [120592] |
+
+**void CreateContainer(container, input) [12]**
+
+| Переменная              | Размер       |
+|-------------------------|--------------|
+| int type                | 4 [0]        |
+| float Re                | 4 [4]        |
+| float Im                | 4 [12]       |
+
+*Прим.: вместо Re и Im могут быть поля классов Fraction и Polar, но т.к. они имеют одинаковые размеры, пишу один раз
+на примере класса Complex* 
+
+**void CreateRandomContainer(Container &container, int size) [16]**
+
+| Переменная              | Размер       |
+|-------------------------|--------------|
+| int i                   | 4 [0]        |
+| int type                | 4 [4]        |
+| float Re                | 4 [12]       |
+| float Im                | 4 [16]       |
+*Прим.: вместо Re и Im могут быть поля классов Fraction и Polar, но т.к. они имеют одинаковые размеры, пишу один раз
+на примере класса Complex*
+
+**void PrintContainer(Container &container, std::ofstream &output) [4]**
+
+| Переменная              | Размер       |
+|-------------------------|--------------|
+| int i                   | 4 [0]        |
+
+**void ShakerSort(Container &container) [13]**
+
+| Переменная              | Размер       |
+|-------------------------|--------------|
+| int left                | 4 [0]        |
+| int right               | 4 [4]        |
+| int pos                 | 4 [8]        |
+| bool isChanged          | 1 [12]       |
 
 ### Глобальные переменные
 

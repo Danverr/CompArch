@@ -1,0 +1,5 @@
+===== FILLED CONTAINER =====
+Container size: 0
+
+===== SORTED CONTAINER =====
+Container size: 0

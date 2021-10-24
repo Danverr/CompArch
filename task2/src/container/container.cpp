@@ -31,11 +31,10 @@ void Container::CreateContainer(std::ifstream &input) {
 }
 
 void Container::CreateRandomContainer(int size) {
-    int type = rand() % 3 + 1;
     Size = size;
 
     for (int i = 0; i < size; i++) {
-        switch (type) {
+        switch (rand() % 3 + 1) {
             case 1:
                 Numbers[i] = new Complex();
                 break;

@@ -3,9 +3,9 @@
 
 
 int RandomInt() {
-    return rand() * (rand() % 2 ? 1 : -1);
+    return (rand() % 1000000) * (rand() % 2 ? 1 : -1);
 }
 
 float RandomFloat() {
-    return float(RandomInt()) / INT32_MAX * rand();
+    return float(RandomInt()) / 1000000.0 * RandomInt();
 }

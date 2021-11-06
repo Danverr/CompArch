@@ -1,0 +1,7 @@
+===== FILLED CONTAINER =====
+Container size: 1
+40372.518756e^(67125.038406i)
+
+===== SORTED CONTAINER =====
+Container size: 1
+40372.518756e^(67125.038406i)

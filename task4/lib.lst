@@ -1,0 +1,196 @@
+     1                                  global ComplexToReal
+     2                                  global FractionToReal
+     3                                  global PolarToReal
+     4                                  global ShakerSort
+     5                                  
+     6                                  extern fwrite
+     7                                  extern atoi
+     8                                  extern fclose
+     9                                  extern fopen
+    10                                  extern strcmp
+    11                                  extern srand
+    12                                  extern time
+    13                                  extern printf
+    14                                  extern fputc
+    15                                  extern fprintf
+    16                                  extern rand
+    17                                  extern sqrtf
+    18                                  
+    19                                  extern Complex
+    20                                  extern Polar
+    21                                  extern Fraction
+    22                                  extern Number
+    23                                  extern ToReal
+    24                                  
+    25                                  SECTION .text
+    26                                  
+    27                                  
+    28                                  
+    29                                  ;float ComplexToReal(struct Complex* complex) {
+    30                                  ;    return sqrt(complex->Re*complex->Re + complex->Im*complex->Im);
+    31                                  ;}
+    32                                  ComplexToReal:
+    33 00000000 F30F1007                        movss   xmm0, DWORD [rdi]
+    34 00000004 F30F104F04                      movss   xmm1, DWORD [rdi+4]
+    35 00000009 F30F59C0                        mulss   xmm0, xmm0
+    36 0000000D F30F59C9                        mulss   xmm1, xmm1
+    37 00000011 F30F58C1                        addss   xmm0, xmm1
+    38 00000015 660FEFC9                        pxor    xmm1, xmm1
+    39 00000019 0F2EC8                          ucomiss xmm1, xmm0
+    40 0000001C 7705                            ja      .sqrt
+    41 0000001E F30F51C0                        sqrtss  xmm0, xmm0
+    42 00000022 C3                              ret
+    43                                  .sqrt:
+    44 00000023 E9(00000000)                    jmp     sqrtf
+    45                                  
+    46                                  ;float FractionToReal(struct Fraction* fraction) {
+    47                                  ;    return (float)(fraction->Numerator) / fraction->Denominator;
+    48                                  ;}
+    49                                  FractionToReal:
+    50 00000028 660FEFC0                        pxor    xmm0, xmm0
+    51 0000002C 660FEFC9                        pxor    xmm1, xmm1
+    52 00000030 F30F2A07                        cvtsi2ss        xmm0, DWORD [rdi]
+    53 00000034 F30F2A4F04                      cvtsi2ss        xmm1, DWORD [rdi+4]
+    54 00000039 F30F5EC1                        divss   xmm0, xmm1
+    55 0000003D C3                              ret
+    56                                  
+    57                                  ;float PolarToReal(struct Polar* polar) {
+    58                                  ;    return polar->R;
+    59                                  ;}
+    60                                  PolarToReal:
+    61 0000003E F30F1007                        movss   xmm0, DWORD [rdi]
+    62 00000042 C3                              ret
+    63                                  
+    64                                  ;void ShakerSort(struct Container* container) {
+    65                                  ;    int left = -1;
+    66                                  ;    int right = container->Size;
+    67                                  ;    int pos = 0;
+    68                                  ;    bool isChanged = 0;
+    69                                  ;
+    70                                  ;    do {
+    71                                  ;        isChanged = 0;
+    72                                  ;
+    73                                  ;        while (pos + 1 < right) {
+    74                                  ;            if (ToReal(container->Numbers[pos]) < ToReal(container->Numbers[pos + 1])) {
+    75                                  ;                struct Number* temp = container->Numbers[pos];
+    76                                  ;                container->Numbers[pos] = container->Numbers[pos + 1];
+    77                                  ;                container->Numbers[pos + 1] = temp;
+    78                                  ;                isChanged = 1;
+    79                                  ;            }
+    80                                  ;            ++pos;
+    81                                  ;        }
+    82                                  ;        --pos;
+    83                                  ;        --right;
+    84                                  ;
+    85                                  ;        while (pos - 1 > left) {
+    86                                  ;            if (ToReal(container->Numbers[pos - 1]) < ToReal(container->Numbers[pos])) {
+    87                                  ;                struct Number* temp = container->Numbers[pos - 1];
+    88                                  ;                container->Numbers[pos - 1] = container->Numbers[pos];
+    89                                  ;                container->Numbers[pos] = temp;
+    90                                  ;                isChanged = 1;
+    91                                  ;            }
+    92                                  ;            --pos;
+    93                                  ;        }
+    94                                  ;        ++pos;
+    95                                  ;        ++left;
+    96                                  ;    } while (isChanged);
+    97                                  ;}
+    98                                  ShakerSort:
+    99 00000043 4157                            push    r15
+   100 00000045 4889F8                          mov     rax, rdi
+   101 00000048 31D2                            xor     edx, edx
+   102 0000004A 4156                            push    r14
+   103 0000004C 4883C008                        add     rax, 8
+   104 00000050 4155                            push    r13
+   105 00000052 4154                            push    r12
+   106 00000054 41BCFFFFFFFF                    mov     r12d, -1
+   107 0000005A 55                              push    rbp
+   108 0000005B 53                              push    rbx
+   109 0000005C 4883EC28                        sub     rsp, 40
+   110 00000060 8B37                            mov     esi, DWORD [rdi]
+   111 00000062 48897C2408                      mov     QWORD [rsp+8], rdi
+   112 00000067 89742404                        mov     DWORD [rsp+4], esi
+   113 0000006B 4889442418                      mov     QWORD [rsp+24], rax
+   114                                  .shaker_sort_loop:
+   115 00000070 8D4201                          lea     eax, [rdx+1]
+   116 00000073 89442410                        mov     DWORD [rsp+16], eax
+   117 00000077 89C6                            mov     esi, eax
+   118 00000079 8B442404                        mov     eax, DWORD [rsp+4]
+   119 0000007D 39F0                            cmp     eax, esi
+   120 0000007F 0F8EEA000000                    jle     .start_shaker_sort_loop
+   121 00000085 29D0                            sub     eax, edx
+   122 00000087 4863CA                          movsx   rcx, edx
+   123 0000008A 488B742408                      mov     rsi, QWORD [rsp+8]
+   124 0000008F 31DB                            xor     ebx, ebx
+   125 00000091 8D50FE                          lea     edx, [rax-2]
+   126 00000094 488B442418                      mov     rax, QWORD [rsp+24]
+   127 00000099 89542414                        mov     DWORD [rsp+20], edx
+   128 0000009D 4801CA                          add     rdx, rcx
+   129 000000A0 4C8D3CCE                        lea     r15, [rsi+rcx*8]
+   130 000000A4 488D2CD0                        lea     rbp, [rax+rdx*8]
+   131                                  .forward_if:
+   132 000000A8 4D8B6F08                        mov     r13, QWORD [r15+8]
+   133 000000AC 4C89EF                          mov     rdi, r13
+   134 000000AF E8(00000000)                    call    ToReal
+   135 000000B4 4D8B7710                        mov     r14, QWORD [r15+16]
+   136 000000B8 F30F110424                      movss   DWORD [rsp], xmm0
+   137 000000BD 4C89F7                          mov     rdi, r14
+   138 000000C0 E8(00000000)                    call    ToReal
+   139 000000C5 0F2F0424                        comiss  xmm0, DWORD [rsp]
+   140 000000C9 760D                            jbe     .forward_loop
+   141 000000CB 4D897708                        mov     QWORD [r15+8], r14
+   142 000000CF BB01000000                      mov     ebx, 1
+   143 000000D4 4D896F10                        mov     QWORD [r15+16], r13
+   144                                  .forward_loop:
+   145 000000D8 4983C708                        add     r15, 8
+   146 000000DC 4939EF                          cmp     r15, rbp
+   147 000000DF 75C7                            jne     .forward_if
+   148 000000E1 8B542410                        mov     edx, DWORD [rsp+16]
+   149 000000E5 03542414                        add     edx, DWORD [rsp+20]
+   150                                  .backward_loop:
+   151 000000E9 8D42FE                          lea     eax, [rdx-2]
+   152 000000EC 836C240401                      sub     DWORD [rsp+4], 1
+   153 000000F1 4139C4                          cmp     r12d, eax
+   154 000000F4 7D5E                            jge     .end_shaker_sort_loop
+   155 000000F6 488B4C2408                      mov     rcx, QWORD [rsp+8]
+   156 000000FB 4863C2                          movsx   rax, edx
+   157 000000FE 4429E2                          sub     edx, r12d
+   158 00000101 48C1E003                        sal     rax, 3
+   159 00000105 488D6C01F8                      lea     rbp, [rcx-8+rax]
+   160 0000010A 4C8D3C01                        lea     r15, [rcx+rax]
+   161 0000010E 8D42FD                          lea     eax, [rdx-3]
+   162 00000111 48C1E003                        sal     rax, 3
+   163 00000115 4829C5                          sub     rbp, rax
+   164                                  .backward_if:
+   165 00000118 4D8B77F8                        mov     r14, QWORD [r15-8]
+   166 0000011C 4C89F7                          mov     rdi, r14
+   167 0000011F E8(00000000)                    call    ToReal
+   168 00000124 4D8B2F                          mov     r13, QWORD [r15]
+   169 00000127 F30F110424                      movss   DWORD [rsp], xmm0
+   170 0000012C 4C89EF                          mov     rdi, r13
+   171 0000012F E8(00000000)                    call    ToReal
+   172 00000134 0F2F0424                        comiss  xmm0, DWORD [rsp]
+   173 00000138 760C                            jbe     .end_backward_loop
+   174 0000013A 4D896FF8                        mov     QWORD [r15-8], r13
+   175 0000013E BB01000000                      mov     ebx, 1
+   176 00000143 4D8937                          mov     QWORD [r15], r14
+   177                                  .end_backward_loop:
+   178 00000146 4983EF08                        sub     r15, 8
+   179 0000014A 4939EF                          cmp     r15, rbp
+   180 0000014D 75C9                            jne     .backward_if
+   181 0000014F 418D542402                      lea     edx, [r12+2]
+   182                                  .end_shaker_sort_loop:
+   183 00000154 4183C401                        add     r12d, 1
+   184 00000158 84DB                            test    bl, bl
+   185 0000015A 0F8510FFFFFF                    jne     .shaker_sort_loop
+   186 00000160 4883C428                        add     rsp, 40
+   187 00000164 5B                              pop     rbx
+   188 00000165 5D                              pop     rbp
+   189 00000166 415C                            pop     r12
+   190 00000168 415D                            pop     r13
+   191 0000016A 415E                            pop     r14
+   192 0000016C 415F                            pop     r15
+   193 0000016E C3                              ret
+   194                                  .start_shaker_sort_loop:
+   195 0000016F 31DB                            xor     ebx, ebx
+   196 00000171 E973FFFFFF                      jmp     .backward_loop

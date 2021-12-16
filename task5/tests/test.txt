@@ -1,0 +1,17 @@
+10
+Cookies 200 1
+Cheese 500 2
+Milk 100 1
+Bread 300 2
+Cola 400 1
+Pepsi 600 2
+Kolbaska 700 1
+Kotletka 800 2
+Chocolate 900 1
+Chips 1000 2
+5
+Bob 3 Milk Bread Cola
+Alice 4 Pepsi Pepsi Pepsi Pepsi
+Aboba 1 Chocolate
+Sglypa 3 Chips Bread Cheese
+Person 5 Cola Cookies Milk Pepsi Chocolate
